@@ -1,0 +1,14 @@
+{
+  "name": "fullstack-app",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "install": "npm install --prefix frontend && npm install --prefix backend",
+    "start": "concurrently \"npm start --prefix backend\" \"npm start --prefix frontend\"",
+    "build": "npm run build --prefix frontend",
+    "heroku-postbuild": "npm run build --prefix frontend && cp -r frontend/build/* backend/build/"
+  },
+  "devDependencies": {
+    "concurrently": "^6.0.0"
+  }
+}
