@@ -11,7 +11,6 @@ const currencySymbolMap = {
   'inr': '₹',
   'gbp': '£',
   'euro': '€',
-  // Add more currencies as needed
 };
 
 const getCurrencySymbol = (currency) => {
@@ -62,7 +61,6 @@ const Dashboard = () => {
           body: JSON.stringify({ expenses }),
         });
         const result = await response.json();
-        console.log("Checkpoint result in getInsight: ", result);
         setInsight(result.insight);
       } catch (error) {
         console.error('Error getting insight:', error);
@@ -71,7 +69,6 @@ const Dashboard = () => {
     };
     
     const processCsvData = async (csvData) => {
-      console.log("Checkpoint: ", csvData);
       
       // If CSV data is empty, handle this case
       if (!csvData.trim()) {
