@@ -148,7 +148,6 @@ async function findUserByPhoneNumber(phoneNumber) {
 //working /otp/send
 app.post("/otp/send", async (req, res) => {
     const { phoneNumber } = req.body;
-    console.log("Checkpoint 1 in /otp/send/: ", phoneNumber);
 
     try {
         // Send OTP request
@@ -189,18 +188,12 @@ app.post("/otp/verify", async (req, res) => {
     const { phoneNumber, code, newUser, name, currency } = req.body;
 
     try {
-        console.log("Checkpoint phoneNumber: ", phoneNumber);
-        console.log("Checkpoint newUser: ", newUser);
-        console.log("Checkpoint reqBody: ", req.body);
-        
         // Find OTP request
         const otpRequest = await OtpRequest.findOne({ phoneNumber });
         if (!otpRequest) {
-            console.log("Checkpoint error 1");
             return res.status(400).json({ error: "No OTP request found for this number" });
         }
         
-        console.log("Checkpoint phoneNumber: ", otpRequest);
 
         // Verify the OTP
         const result = await vonageClient.verify.check(otpRequest.requestId, code);
@@ -209,7 +202,6 @@ app.post("/otp/verify", async (req, res) => {
 
         // Check the result of the verification
         if (result.status !== "0") {
-            console.log("Checkpoint error 2");
             return res.status(400).json({ error: "Invalid OTP" });
         }
 
@@ -217,14 +209,11 @@ app.post("/otp/verify", async (req, res) => {
         let user = await User.findOne({ whatsappNumber: phoneNumber });
 
         if (newUser === true) {
-            console.log("Checkpoint in newUser=true");
             if (user) {
-                console.log("Checkpoint error 3");
                 return res.status(409).json({ error: "User already exists" });
             }
             user = await User.create({ whatsappNumber: phoneNumber, currency, name });
         } else if (!user) {
-            console.log("Checkpoint error 4");
             return res.status(404).json({ error: "User not found" });
         }
 
@@ -232,7 +221,6 @@ app.post("/otp/verify", async (req, res) => {
         await OtpRequest.deleteOne({ phoneNumber });
 
         // Send success response
-        console.log("Checkpoint return success");
         return res.status(200).json({
             message: newUser === "true" ? "User created successfully" : "OTP verified successfully",
             user: {
@@ -248,66 +236,10 @@ app.post("/otp/verify", async (req, res) => {
         return res.status(500).json({ error: "Error processing OTP verification" });
     }
 });
-
-/*app.post("/otp/send", async (req, res) => {
-    const { phoneNumber } = req.body;
-    console.log("Checkpoint 1 in /otp/send/: ", phoneNumber);
-        // Send success response
-        return res.status(200).json({
-            message: "OTP sent successfully",
-        });
-});
-
-// OTP Verification Endpoint
-app.post("/otp/verify", async (req, res) => {
-    const { phoneNumber, code, newUser, name, currency } = req.body;
-
-    try {
-        console.log("Checkpoint phoneNumber: ", phoneNumber);
-        console.log("Checkpoint newUser: ", newUser);
-        console.log("Checkpoint reqBody: ", req.body);
-        
-        // Find the user in the database
-        let user = await User.findOne({ whatsappNumber: phoneNumber });
-
-        if (newUser === true) {
-            console.log("Checkpoint in newUser=true");
-            if (user) {
-                console.log("Checkpoint error 3");
-                return res.status(409).json({ error: "User already exists" });
-            }
-            user = await User.create({ whatsappNumber: phoneNumber, currency, name });
-        } else if (!user) {
-            console.log("Checkpoint error 4");
-            return res.status(404).json({ error: "User not found" });
-        }
-
-        // Remove the OTP request after successful verification
-        //await OtpRequest.deleteOne({ phoneNumber });
-
-        // Send success response
-        console.log("Checkpoint return success");
-        //return res.status(500).json({ error: "Error processing OTP verification" });
-        return res.status(200).json({
-            message: newUser === "true" ? "User created successfully" : "OTP verified successfully",
-            user: {
-                id: user._id,
-                name: user.name,
-                phoneNumber: user.whatsappNumber,
-                currency: user.currency
-            }
-        });
-        
-    } catch (error) {
-        console.error('Error during OTP verification:', error);
-        return res.status(500).json({ error: "Error processing OTP verification" });
-    }
-});*/
 
 app.post('/getInsight', async (req, res) => {
     const { expenses } = req.body;
 
-    console.log("Checkpoint in getInsight: ", expenses);
     try {
         // Initialize the generative model
         const model = genAI.getGenerativeModel({
@@ -331,8 +263,6 @@ app.post('/getInsight', async (req, res) => {
             `Based on the following expenses done by the user for the current month, provide a short and crisp one-line insight:\n\n${expenses}`
         );
 
-        console.log("Checkpoint result in getInsight: ", result);
-
         // Extract the text from the response
         const insight = result.response.text();
         res.json({ insight });
@@ -352,15 +282,12 @@ app.post('/webhook/whatsapp', async (req, res) => {
 
     let user = null;
     let tempFrom = null;
-    //let temp = "+" + from;
-    // Check if the first character is not a "+"
+    
     if (!from.startsWith("+")) {
         tempFrom = "+" + from;
     }
-    console.log("altered from is: ", tempFrom);
 
 
-    // Check if user exists in MongoDB
     const userResult = await findUserByPhoneNumber(tempFrom);
     if (userResult.error) {
         const message = 'You have not yet registered on web. Please register yourself.';
@@ -369,7 +296,6 @@ app.post('/webhook/whatsapp', async (req, res) => {
     }
     user = userResult;
     console.log("user: ", user);
-    console.log("Checkpoint user._id: ", user._id);
 
     const incomingText = "Join couch plow";
     let message;
@@ -407,7 +333,6 @@ app.post('/webhook/whatsapp', async (req, res) => {
             if (expenseCsv.error) {
                 throw new Error(expenseCsv.message);
              }
-            console.log("Checkpoint expenseCsv: ", expenseCsv);
             const analyticsModel = genAI.getGenerativeModel({
                 model: "gemini-1.5-flash",
                 systemInstruction: "Based on below expenses done by user give answer to user. Optimize as WhatsApp message reply and add emojis.\n\nExpense History:\n" + expenseCsv,
@@ -427,14 +352,7 @@ app.post('/webhook/whatsapp', async (req, res) => {
 
             const analyticsAiResult = await analyticsChatSession.sendMessage(body);
             const analyticsAiResponse = analyticsAiResult.response.text()
-            return res.send(createVonageResponse(from, analyticsAiResponse));
-            
-            /* Send temp success response to POSTMAN for testing
-            return res.status(200).json({
-            from: from,
-            analyticsAiResponse: analyticsAiResponse
-        });*/
-
+            return res.send(createVonageResponse(from, analyticsAiResponse));          
         }   
         catch (error) {
             console.error('Error:', error);
@@ -462,12 +380,7 @@ app.post('/webhook/whatsapp', async (req, res) => {
 
                 const message = `Your expense is logged successfully as below:\n*📝 Description:* ${expenseResponse.description}\n*✨ Category:* ${expenseResponse.category}\n*🎫 Sub Category:* ${expenseResponse.subCategory}\n*💲 Amount:* ${user.currency} ${expenseResponse.amount}\n*📅 Date:* ${expenseResponse.date}\n\n`;
                 return res.send(createVonageResponse(from, message));
-                
-            /* Send temp success response to POSTMAN for testing
-            return res.status(200).json({
-            from: from,
-            analyticsAiResponse: message
-            });*/
+
             } catch (err) {
                 console.error('Error:', err);
                 const message = 'Something went wrong. Please try again.';
@@ -504,14 +417,9 @@ app.post('/webhook/ui', async (req, res) => {
         return res.status(404).send({ error: "User not found" });
     }
     user = userResult;
-    console.log("user: ", user);
-    console.log("Checkpoint user._id: ", user._id);
 
         try {
-        // Fetch expense data and get CSV
-        console.log("Checkpoint 1");
         const expenseCsv = await getUserExpensesAsCSV(user._id);
-        console.log("Checkpoint expenseCsv: ", expenseCsv);
 
         // If expenseCsv is an empty string, it means no expenses were found
         if (expenseCsv === '') {
@@ -536,7 +444,6 @@ app.post('/webhook/ui', async (req, res) => {
 
 
 const handleStatus = (req, res) => {
-  console.log("Checkpoint in handleStatus: ", req.body)
   res.status(200).end()
 }
 
