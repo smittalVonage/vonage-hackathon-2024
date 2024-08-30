@@ -14,7 +14,7 @@
 
 **Architecture**
 <br><br>
-![selhfsehfhefoh (3)](https://github.com/user-attachments/assets/b1d9db64-e843-43f0-a858-84e6861f789b)
+![pic](https://github.com/user-attachments/assets/646638c8-0269-470c-89c7-a4481150565e)
 <br><br>
 ![frontend1](https://github.com/user-attachments/assets/7d84657b-5a0b-4b93-9f9e-53055a82eb92)
 
