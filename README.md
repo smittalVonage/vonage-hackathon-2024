@@ -10,3 +10,9 @@
 - **Backend:** Node.js, Express
 - **Database:** MongoDB Atlas
 - **Deployment:** Render Cloud Infrastructure
+<br><br>
+
+**Architecture**
+<br><br>
+![selhfsehfhefoh (3)](https://github.com/user-attachments/assets/b1d9db64-e843-43f0-a858-84e6861f789b)
+
