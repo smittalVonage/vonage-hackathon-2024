@@ -16,7 +16,4 @@
 <br><br>
 ![pic](https://github.com/user-attachments/assets/646638c8-0269-470c-89c7-a4481150565e)
 <br><br>
-![frontend1](https://github.com/user-attachments/assets/7d84657b-5a0b-4b93-9f9e-53055a82eb92)
-
-
-
+![test](https://github.com/user-attachments/assets/296d8227-b3d0-454a-a7d0-ee387c99658b)
