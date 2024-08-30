@@ -4,5 +4,8 @@
   "private": true,
   "scripts": {
     "start": "node server.js"
+  },
+  "dependencies": {
+    "json2csv": "^6.0.0-alpha.2"
   }
 }
