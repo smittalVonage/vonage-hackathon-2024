@@ -79,8 +79,8 @@ const sendWhatsappMessage = async (number, message) => {
     },
     {
       auth: {
-        username: process.env.VONAGE_API_KEY,
-        password: process.env.VONAGE_API_SECRET,
+        username: process.env.VONAGE_API_KEY1,
+        password: process.env.VONAGE_API_SECRET1,
       },
     }
   )
