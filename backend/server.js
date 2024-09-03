@@ -297,9 +297,11 @@ app.post('/webhook/whatsapp', async (req, res) => {
     user = userResult;
     console.log("user: ", user);
 
-    const incomingText = "Join couch plow";
-    let message;
-    if (body === incomingText) {
+  const incomingText1 = "Join couch plow";
+const incomingText2 = "Join shrug carol";
+let message;
+
+if (body === incomingText1 || body === incomingText2) {
         message = `Hey ${user.name}, hope you’re doing well. Would you like to log a new expense, or would you prefer to check the status of your current expenses?`;
         return res.send(createVonageResponse(from, message));
     }
